@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div ng-app="my-medicines" class="container" ng-controller="medicine-controller">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="text-align:center;font-size:large; font-family:Georgia, 'Times New Roman', Times, serif;color:lightcoral">
+            Medicine Information
+        </div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-success "
+                    data-target="#AddNew" data-toggle="modal">
+                Add Medicine
+            </button>
+
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Search : <input type="text" placeholder="Search medicine" ng-model="searchText" /><br /><br />
+            <br />
+        </div>
+        @*Medicine Records*@
+        <table class="table table-bordered table-hover table table-striped" style="font-family:Georgia, 'Times New Roman', Times, serif">
+            <thead>
+                <tr>
+                    <th> Medicine ID</th>
+                    <th> Medicine Name</th>
+                    <th>Medicine Price </th>
+                    <th>Medicine Quantity</th>
+                    <th> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="med in Medicines | filter:searchText">
+                    <td> {{med.ID}}</td>
+                    <td> {{med.Name}} </td>
+                    <td>{{med.Price}}</td>
+                    <td>{{med.Quantity}}</td>
+                    <td style="width:200px;">
+                        <a href="#"
+                           class="btn btn-info"
+                           data-toggle="modal"
+                           data-target="#Update"
+                           ng-click="getForUpdate(med)">
+                            Update
+                        </a>
+                        <a href="#" class="btn btn-danger"
+                           id="btnDelete"
+                           data-toggle="modal"
+                           data-target="#deleteDialog"
+                           ng-click="getForDelete(med)">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    @*New record Modal addition..*@
+    <div class="modal" id="AddNew" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">Add New Medicine</h3>
+                </div>
+                <div class="modal-body" style="margin-left:20px">
+                    @*Add New Medicine form starts here...*@
+                    <form class="form-horizontal" name="AddNewForm">
+                        <div class="form-group">
+                            <input class="form-control" readonly="readonly" name="MedNo" ng-model="MedNo" type="hidden" placeholder="Medicine Number" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"> Medicine Name</label>
+                            <input class="form-control" name="Name" ng-model="Name" type="text" placeholder="Medicine Name" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"> Price</label>
+                            <input class="form-control" name="Price" ng-model="Price" type="text" placeholder="Medicine Price" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"> Quantity</label>
+                            <input class="form-control" name="Quantity" ng-model="Quantity" type="text" placeholder="Quantity" />
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" ng-click="save()">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="resetSave()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Upadate Medicine records*@
+    <div class="modal" id="Update" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">Update Existing Medicine</h3>
+                </div>
+                <div class="modal-body" style="margin-left:20px">
+                    @*Update Medicine form starts here...*@
+                    <form class="form-horizontal" name="UpdateMedicineForm">
+                        <div class="form-group">
+                            <input class="form-control" readonly="readonly" name="MedNo" ng-model="UpdateMedNo" type="hidden" placeholder="Medicine Number" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-info"> Medicine Name</label>
+                            <input class="form-control" name="Name" ng-model="UpdateName" type="text" placeholder="Medicine Name" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-info"> Price</label>
+                            <input class="form-control" name="Price" ng-model="UpdatePrice" type="text" placeholder="Medicine Price" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-info"> Quantity</label>
+                            <input class="form-control" name="Quantity" ng-model="UpdateQuantity" type="text" placeholder="Quantity" />
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnUpdate" data-dismiss="modal" ng-click="update()">
+                        Update
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Delete Medicine record*@
+    <div class="modal" role="dialog" id="deleteDialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-info">Are you sure you want to delete the record?</h3>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <p>Medicine ID : {{UpdateMedNo}}</p>
+                        <p>Medicine Name : {{UpdateName}}</p>
+                        <p>Medicine Price: {{UpdatePrice}}</p>
+                        <p>Quantity : {{UpdateQuantity}}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="delete(UpdateMedNo)">Delete Record</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script src="~/MyAngularJSApp/Medicine/Module.js"></script>
+    <script src="~/MyAngularJSApp/Medicine/Service.js"></script>
+    <script src="~/MyAngularJSApp/Medicine/Controller.js"></script>
+
+}
+
+
